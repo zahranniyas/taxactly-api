@@ -5,6 +5,7 @@ import cors from "cors";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import taxReturnRoutes from "./routes/taxReturnRoutes.js";
+import employmentIncomeRoutes from "./routes/employmentIncomeRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,6 +18,7 @@ app.use(cors());
 //routes
 app.use("/api/auth", authRoutes);
 app.use("/api/tax", taxReturnRoutes);
+app.use("/api/employment-income", employmentIncomeRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server up on ${PORT}`);
