@@ -11,11 +11,9 @@ export const create = async (req, res) => {
     if (!image || !title || !caption || !rating)
       return res.status(400).json({ message: "Please provide all fields" });
 
-    //upload image to cloudinary
     const uploadResponse = await cloudinary.uploader.upload(image);
     const imageUrl = uploadResponse.secure_url;
 
-    //save to database
     const newTaxReturn = new TaxReturn({
       title,
       caption,
@@ -51,7 +49,6 @@ export const deleteReturn = async (req, res) => {
     if (taxReturn.user.toString() !== req.user._id.toString())
       return res.status(401).json({ message: "Unauthorized" });
 
-    //delete image from cloudinary
     if (taxReturn.image && taxReturn.image.includes("cloudinary")) {
       try {
         const publicId = taxReturn.image.split("/").pop().split(".")[0];

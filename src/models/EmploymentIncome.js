@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const MonthlySchema = new mongoose.Schema({
-  monthIndex: { type: Number, required: true }, // 0 = Apr
+  monthIndex: { type: Number, required: true },
   gross: { type: Number, required: true },
   paye: { type: Number, required: true },
   net: { type: Number, required: true },
@@ -17,7 +17,7 @@ const EmploymentIncomeSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    taxYear: { type: String, required: true }, // “2025-26”
+    taxYear: { type: String, required: true },
     companyName: { type: String, required: true },
     employeeId: { type: String, required: true },
     isPrimary: { type: Boolean, default: true },

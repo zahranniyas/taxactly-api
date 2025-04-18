@@ -48,7 +48,6 @@ export const getEmploymentIncome = async (req, res) => {
   res.json(data);
 };
 
-/* ----------  PUT MONTH / UPLOAD  ---------- */
 const upload = multer({ storage: multer.memoryStorage() });
 
 export const updateMonthlyActual = [
@@ -56,6 +55,13 @@ export const updateMonthlyActual = [
 
   async (req, res) => {
     try {
+      console.log(
+        "file?",
+        !!req.file,
+        req.file?.originalname,
+        "size",
+        req.file?.size
+      );
       const { id, idx } = req.params;
       const { actualGross } = req.body;
 
@@ -89,3 +95,42 @@ export const updateMonthlyActual = [
     }
   },
 ];
+
+// PUT /employment-income/:id
+export const updateEmploymentIncome = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { companyName, employeeId, regularMonthlySalary, isPrimary } =
+      req.body;
+    const gross = Number(regularMonthlySalary);
+
+    const months = Array.from({ length: 12 }).map((_, idx) => {
+      const paye = isPrimary
+        ? calcMonthlyPAYE(gross)
+        : Math.round(gross * 0.18);
+      return {
+        monthIndex: idx,
+        gross,
+        paye,
+        net: gross - paye,
+      };
+    });
+
+    const doc = await EmploymentIncome.findByIdAndUpdate(
+      id,
+      {
+        companyName,
+        employeeId,
+        regularMonthlySalary: gross,
+        isPrimary,
+        months,
+      },
+      { new: true, runValidators: true }
+    );
+
+    res.json(doc);
+  } catch (err) {
+    console.error("updateEmploymentIncome error:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
